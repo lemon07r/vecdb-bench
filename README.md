@@ -26,6 +26,7 @@ A Bun + TypeScript benchmark evaluating three embedded vector database stacks fo
 ### Setup
 
 ```bash
+git clone https://github.com/lemon07r/vecdb-bench.git
 bun install
 cp .env.example .env  # add your API keys
 bun run src/bench.ts
