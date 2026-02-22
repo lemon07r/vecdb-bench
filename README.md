@@ -152,6 +152,25 @@ bun run src/bench.ts -d 256
 - **SQLite and LanceDB handle 4× larger vectors well** — latency increase is minimal (1–5ms range)
 - **Overall ranking unchanged** — SQLite > LanceDB > DuckDB regardless of model size
 
+### Reranking Impact Analysis
+
+Comparing hybrid search quality with and without the reranker, and across model sizes (averaged across all three engines):
+
+| Configuration | Code MRR | Code NDCG@5 | Fantasy MRR | Fantasy NDCG@5 |
+|---------------|----------|-------------|-------------|----------------|
+| 0.6B hybrid (no rerank) | 0.961 | 0.952 | 0.983 | 0.988 |
+| 0.6B hybrid+rerank | 1.000 | 0.981 | 1.000 | 0.996 |
+| 8B hybrid (no rerank) | 0.972 | 0.960 | 0.992 | 0.991 |
+| 8B hybrid+rerank | 1.000 | 1.000 | 1.000 | 0.994 |
+
+**Key observations:**
+
+- **Reranking consistently improves quality** — MRR jumps to perfect 1.000 in all cases, meaning the correct document is always ranked first after reranking.
+- **8B without reranker ≈ 0.6B with reranker** on Code Search — 8B hybrid achieves 0.960 NDCG@5 vs 0.6B hybrid+rerank at 0.981. The gap is small enough that for latency-sensitive applications, using a larger embedding model without reranking can be a viable alternative to a smaller model with reranking.
+- **Fantasy Books benefits less from reranking** — even 0.6B hybrid without reranking already scores 0.988 NDCG@5, leaving little room for improvement. The natural language in fiction is easier to match than code.
+- **The biggest quality gain from reranking is on Code Search with 0.6B** — NDCG@5 jumps from 0.952 → 0.981 (+3.0%), while 8B reranking pushes it to a perfect 1.000.
+- **Diminishing returns at 8B** — the reranker adds less value with 8B embeddings since the base retrieval is already stronger, especially on Fantasy Books where 8B hybrid+rerank (0.994) actually scores marginally lower than 8B hybrid alone on some engines.
+
 ### Key Takeaways
 
 - **Quality is virtually identical** across all three engines (~0.97 MRR, ~0.97 NDCG@5 on hybrid+rerank). The reranker equalizes any quality differences.
