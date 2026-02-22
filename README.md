@@ -10,10 +10,9 @@ A Bun + TypeScript benchmark evaluating three embedded vector database stacks fo
 | **DuckDB + VSS + FTS** | `duckdb` with vector similarity search & full-text search extensions |
 | **SQLite + FTS5 + sqlite-vec** | `bun:sqlite` with `sqlite-vec` for vectors + FTS5 for full-text |
 
-### Models
+### Environment Variables
 
-- **Embedding**: Qwen3-Embedding-0.6B (1024 dimensions) via SiliconFlow API
-- **Reranker**: Qwen3-Reranker-0.6B via SiliconFlow API
+Copy `.env.example` to `.env` and fill in your API keys and model configuration. See `.env.example` for all required variables.
 
 ### Methodology
 
@@ -28,11 +27,16 @@ A Bun + TypeScript benchmark evaluating three embedded vector database stacks fo
 ```bash
 git clone https://github.com/lemon07r/vecdb-bench.git
 bun install
-cp .env.example .env  # add your API keys
+cp .env.example .env  # add your API keys and model config
 bun run src/bench.ts
 ```
 
 ### Results
+
+#### Models Used
+
+- **Embedding**: `Qwen/Qwen3-Embedding-0.6B` (1024 dimensions) via SiliconFlow API
+- **Reranker**: `Qwen/Qwen3-Reranker-0.6B` via SiliconFlow API
 
 #### Code Search Dataset (20 docs, 20 queries)
 

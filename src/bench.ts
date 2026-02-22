@@ -170,8 +170,8 @@ async function main() {
   console.log("╚══════════════════════════════════════════════════════════╝");
   console.log();
   console.log("Models:");
-  console.log("  Embedding: Qwen3-Embedding-0.6B (1024d) via SiliconFlow");
-  console.log("  Reranker:  Qwen3-Reranker-0.6B via SiliconFlow");
+  console.log(`  Embedding: ${(await import("./config")).EMBEDDING_MODEL} (${(await import("./config")).EMBEDDING_DIM}d) via ${(await import("./config")).EMBEDDING_BASE_URL}`);
+  console.log(`  Reranker:  ${(await import("./config")).RERANKER_MODEL} via ${(await import("./config")).RERANKER_BASE_URL}`);
   console.log();
 
   const datasets = [getCodeDataset(), getFantasyDataset()];
