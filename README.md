@@ -31,6 +31,19 @@ cp .env.example .env  # add your API keys and model config
 bun run src/bench.ts
 ```
 
+#### Options
+
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--dimensions` | `-d` | `1024` | Embedding vector dimensions. Must be supported by your embedding model. |
+
+Example with custom dimensions:
+
+```bash
+bun run src/bench.ts --dimensions 512
+bun run src/bench.ts -d 256
+```
+
 ### Results
 
 #### Models Used

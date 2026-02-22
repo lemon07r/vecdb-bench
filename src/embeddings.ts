@@ -1,6 +1,7 @@
 import {
   EFFECTIVE_EMBEDDING_KEY,
   EFFECTIVE_EMBEDDING_URL,
+  EMBEDDING_DIM,
   EMBEDDING_MODEL,
   RERANKER_API_KEY,
   RERANKER_BASE_URL,
@@ -28,7 +29,7 @@ export async function getEmbeddings(texts: string[]): Promise<number[][]> {
             Authorization: `Bearer ${EFFECTIVE_EMBEDDING_KEY}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ model: EMBEDDING_MODEL, input: batch }),
+          body: JSON.stringify({ model: EMBEDDING_MODEL, input: batch, dimensions: EMBEDDING_DIM }),
         });
         if (!res.ok) {
           const text = await res.text();

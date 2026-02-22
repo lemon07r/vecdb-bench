@@ -1,10 +1,19 @@
 import { config } from "dotenv";
+import { parseArgs } from "util";
 config({ path: ".env" });
+
+const { values: cliArgs } = parseArgs({
+  args: Bun.argv.slice(2),
+  options: {
+    dimensions: { type: "string", short: "d" },
+  },
+  strict: false,
+});
 
 export const EMBEDDING_API_KEY = process.env.EMBEDDING_MODEL_API_KEY!;
 export const EMBEDDING_BASE_URL = process.env.EMBEDDING_MODEL_BASE_URL!;
 export const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL_ID!;
-export const EMBEDDING_DIM = 1024;
+export const EMBEDDING_DIM = cliArgs.dimensions ? parseInt(cliArgs.dimensions, 10) : 1024;
 
 export const RERANKER_API_KEY = process.env.RERANKER_MODEL_API_KEY!;
 export const RERANKER_BASE_URL = process.env.RERANKER_MODEL_BASE_URL!;
