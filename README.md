@@ -93,6 +93,65 @@ bun run src/bench.ts -d 256
 | **LanceDB** | 0.233 | 0.978 | 0.975 | 0.967 | 1.9ms | 17ms | 82.5% | 98.1% | **87.2%** |
 | **DuckDB + VSS + FTS** | 0.233 | 0.978 | 0.974 | 0.966 | 19.0ms | 221ms | 82.4% | 84.1% | **82.9%** |
 
+---
+
+### Results with 8B Models (4096 dimensions)
+
+#### Models Used
+
+- **Embedding**: `Qwen/Qwen3-Embedding-8B` (4096 dimensions) via Nebius API
+- **Reranker**: `Qwen/Qwen3-Reranker-8B` via SiliconFlow API
+
+#### Code Search Dataset (20 docs, 20 queries)
+
+| Engine | Method | P@5 | R@5 | MRR | NDCG@5 | Avg ms | P95 ms | Index ms |
+|--------|--------|-----|-----|-----|--------|--------|--------|----------|
+| LanceDB | vector | 0.230 | 0.975 | 1.000 | 0.975 | 1.8 | 6.7 | 26 |
+| LanceDB | fts | 0.220 | 0.925 | 0.925 | 0.912 | 1.2 | 2.1 | 26 |
+| LanceDB | hybrid | 0.230 | 0.975 | 0.967 | 0.956 | 2.4 | 3.8 | 26 |
+| LanceDB | hybrid+rerank | 0.240 | 1.000 | 1.000 | 1.000 | 3.0 | 4.3 | 26 |
+| DuckDB + VSS + FTS | vector | 0.230 | 0.975 | 1.000 | 0.975 | 49.5 | 54.4 | 659 |
+| DuckDB + VSS + FTS | fts | 0.220 | 0.925 | 0.925 | 0.912 | 12.5 | 24.9 | 659 |
+| DuckDB + VSS + FTS | hybrid | 0.230 | 0.975 | 0.975 | 0.962 | 58.1 | 66.5 | 659 |
+| DuckDB + VSS + FTS | hybrid+rerank | 0.240 | 1.000 | 1.000 | 1.000 | 69.7 | 77.4 | 659 |
+| SQLite + FTS5 + sqlite-vec | vector | 0.230 | 0.975 | 1.000 | 0.975 | 1.5 | 6.4 | 10 |
+| SQLite + FTS5 + sqlite-vec | fts | 0.220 | 0.925 | 0.925 | 0.912 | 0.1 | 0.5 | 10 |
+| SQLite + FTS5 + sqlite-vec | hybrid | 0.230 | 0.975 | 0.975 | 0.962 | 1.3 | 1.7 | 10 |
+| SQLite + FTS5 + sqlite-vec | hybrid+rerank | 0.240 | 1.000 | 1.000 | 1.000 | 5.3 | 8.2 | 10 |
+
+#### Fantasy Books Dataset (20 docs, 20 queries)
+
+| Engine | Method | P@5 | R@5 | MRR | NDCG@5 | Avg ms | P95 ms | Index ms |
+|--------|--------|-----|-----|-----|--------|--------|--------|----------|
+| LanceDB | vector | 0.240 | 1.000 | 1.000 | 0.996 | 1.5 | 5.4 | 16 |
+| LanceDB | fts | 0.240 | 1.000 | 0.950 | 0.963 | 1.2 | 2.4 | 16 |
+| LanceDB | hybrid | 0.240 | 1.000 | 0.975 | 0.982 | 2.3 | 3.0 | 16 |
+| LanceDB | hybrid+rerank | 0.240 | 1.000 | 1.000 | 0.994 | 3.0 | 4.6 | 16 |
+| DuckDB + VSS + FTS | vector | 0.240 | 1.000 | 1.000 | 0.996 | 47.9 | 62.5 | 656 |
+| DuckDB + VSS + FTS | fts | 0.240 | 1.000 | 0.950 | 0.963 | 12.0 | 18.6 | 656 |
+| DuckDB + VSS + FTS | hybrid | 0.240 | 1.000 | 1.000 | 0.996 | 57.3 | 64.4 | 656 |
+| DuckDB + VSS + FTS | hybrid+rerank | 0.240 | 1.000 | 1.000 | 0.994 | 69.8 | 78.3 | 656 |
+| SQLite + FTS5 + sqlite-vec | vector | 0.240 | 1.000 | 1.000 | 0.996 | 1.3 | 6.6 | 5 |
+| SQLite + FTS5 + sqlite-vec | fts | 0.240 | 1.000 | 0.975 | 0.974 | 0.1 | 0.3 | 5 |
+| SQLite + FTS5 + sqlite-vec | hybrid | 0.240 | 1.000 | 1.000 | 0.996 | 1.7 | 3.8 | 5 |
+| SQLite + FTS5 + sqlite-vec | hybrid+rerank | 0.240 | 1.000 | 1.000 | 0.994 | 5.3 | 7.8 | 5 |
+
+#### Aggregate Scores
+
+| Engine | P@5 | R@5 | MRR | NDCG@5 | Avg Latency | Avg Indexing | Quality | Perf | Combined |
+|--------|-----|-----|-----|--------|-------------|-------------|---------|------|----------|
+| **SQLite + FTS5 + sqlite-vec** | 0.235 | 0.984 | 0.984 | 0.976 | 2.1ms | 8ms | 83.2% | 98.0% | **87.6%** |
+| **LanceDB** | 0.235 | 0.984 | 0.977 | 0.972 | 2.0ms | 21ms | 82.9% | 98.0% | **87.4%** |
+| **DuckDB + VSS + FTS** | 0.235 | 0.984 | 0.981 | 0.975 | 47.1ms | 658ms | 83.1% | 68.0% | **78.5%** |
+
+#### 8B vs 0.6B Comparison
+
+- **8B models improve hybrid+rerank quality** — Code Search achieves perfect 1.000 NDCG@5 across all engines (vs 0.981 with 0.6B)
+- **Fantasy Books vector search improves** — 0.996 NDCG@5 with 8B vs 0.958 with 0.6B
+- **DuckDB latency increases significantly** with 4096d vectors — ~50ms vector search vs ~12ms at 1024d
+- **SQLite and LanceDB handle 4× larger vectors well** — latency increase is minimal (1–5ms range)
+- **Overall ranking unchanged** — SQLite > LanceDB > DuckDB regardless of model size
+
 ### Key Takeaways
 
 - **Quality is virtually identical** across all three engines (~0.97 MRR, ~0.97 NDCG@5 on hybrid+rerank). The reranker equalizes any quality differences.
